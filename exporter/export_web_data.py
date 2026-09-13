@@ -285,6 +285,13 @@ def _q1_metrics(site_root: Path) -> dict[str, float]:
 def build_frozen_metrics(args: argparse.Namespace, actual: dict[str, dict[str, list[float]]], q2: dict, q3: dict, q42: dict, q43: dict) -> dict[str, float | None]:
     site_root = Path(__file__).resolve().parents[1]
     q1 = _q1_metrics(site_root)
+    selected_alpha = 0.70
+    q3_module_path = site_root / "model" / "q3.py"
+    if q3_module_path.exists():
+        spec = importlib.util.spec_from_file_location("gridscope_metric_q3", q3_module_path)
+        if spec is not None and spec.loader is not None:
+            module = importlib.util.module_from_spec(spec); sys.modules[spec.name] = module; spec.loader.exec_module(module)
+            selected_alpha = float(getattr(module, "SELECTED_ALPHA", selected_alpha))
     q2_plan = _strategy_energy(q2); q3_plan = _strategy_adjusted_energy(q3); q42_plan = _strategy_energy(q42); q43_plan = _strategy_adjusted_energy(q43)
     def plan_cost(strategy: dict[str, dict[str, Any]], adjusted: bool = False) -> float:
         total = 0.0
@@ -301,7 +308,7 @@ def build_frozen_metrics(args: argparse.Namespace, actual: dict[str, dict[str, l
         "m3_plan_kwh": q3_plan, "m3_plan_cost_yuan": plan_cost(q3, True), "m3_emergency_kwh": _strategy_emergency(q3),
         "q4_2_plan_kwh": q42_plan, "q4_2_plan_cost_yuan": plan_cost(q42), "q4_2_emergency_kwh": _strategy_emergency(q42),
         "q4_3_plan_kwh": q43_plan, "q4_3_plan_cost_yuan": plan_cost(q43, True), "q4_3_emergency_kwh": _strategy_emergency(q43),
-        "alpha": 0.70,
+        "alpha": selected_alpha,
     }
 
 
