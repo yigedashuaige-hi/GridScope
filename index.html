@@ -26,6 +26,25 @@
   <style>
     .dt-lines{z-index:0}.dt-node,.dt-center{z-index:1}.flow-blue{stroke:#317cb7}.flow-load{stroke:#104680}.flow-orange{stroke:#f6b293}.dt-load .dt-symbol{color:#7fa9dc}.dt-dot.blue{background:#317cb7}.replay-svg{position:absolute;inset:0;width:100%;height:100%}.replay-svg polyline{fill:none;vector-effect:non-scaling-stroke;stroke-width:2}.replay-actual-line{stroke:#104680}.replay-forecast-line{stroke:#dc6d57;stroke-dasharray:5 4}.replay-axis-line{stroke:#ed786c;stroke-width:.7;vector-effect:non-scaling-stroke}.replay-legend{position:absolute;left:9px;bottom:7px;display:flex;gap:11px;font:9px var(--mono);color:#84938b;background:rgba(255,254,250,.82);padding:3px 5px}.replay-legend i{display:inline-block;width:15px;border-top:2px solid #104680;margin:0 4px 3px 0}.replay-legend .forecast-key{border-top-style:dashed;border-color:#dc6d57}.field-note{font:10px var(--mono);color:#a27c3a;padding:9px 0}.scenario-chart-wrap{margin-top:18px;background:#fbfcf8;border-top:1px solid #d2dfd5;padding-top:12px}.scenario-chart-wrap canvas{width:100%;height:240px;display:block}.scenario-chart-note{font:9px var(--mono);color:#82928a}.q4-price-chart{display:block;width:100%;height:170px;margin-top:14px}.forecast-lock .run-button{margin:0 0 0 auto}.forecast-lock span{flex:1}
   </style>
+  <style>
+    .hero-title{letter-spacing:0;max-width:760px}
+    .panel{min-width:0}
+    .hero-title span{display:block;white-space:nowrap}
+    .dt-grid,.dt-load{top:50%;transform:translateY(-50%)}
+    .dt-pv{left:50%;top:0;transform:translateX(-50%)}
+    .dt-battery{left:50%;bottom:0;transform:translateX(-50%)}
+    .dt-center{left:50%;top:50%;transform:translate(-50%,-50%);width:172px;box-sizing:border-box;padding:4px 9px;background:#14252b;line-height:1.15}
+    .dt-center b{margin:4px 0}
+    .dt-center i{padding:2px 6px}
+    @media(max-width:680px){
+      .hero-title span{white-space:normal}
+      .dt-node{min-width:88px;padding:6px 6px;gap:6px}
+      .dt-symbol{width:24px;height:24px;font-size:14px}
+      .dt-center{width:130px;padding:6px 5px}
+      .dt-center b{font-size:12px;margin:4px 0}
+      .dt-center span,.dt-center i{font-size:8px}
+    }
+  </style>
   <title>GridScope / 微网智能调度站</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -75,7 +94,7 @@
         <section class="hero-row">
           <div>
             <div class="section-kicker historical-label"><span class="live-dot"></span><span id="dateKicker">HISTORICAL REPLAY · 2025 / 02 / 01</span></div>
-            <h1>让每一度电，<em>都在正确的时间</em>到位。</h1>
+            <h1 class="hero-title"><span>让每一度电，都在正确的时间</span><span><em>抵达正确的位置。</em></span></h1>
             <p class="hero-copy">风险感知、多时间尺度的滚动控制，把预测变成合同，把观测变成动作。</p>
           </div>
           <div class="run-badge"><span class="badge-label">EVIDENCE MODE</span><label class="date-label" for="dateSelect">选择历史日期</label><select id="dateSelect" aria-label="选择历史日期"><option>加载中…</option></select><label class="date-label" for="strategySelect">结果策略</label><select id="strategySelect" aria-label="选择结果策略"><option value="Q3-M3">Q3 · M3 全更新</option><option value="Q2">Q2 · 风险感知</option><option value="Q4-2">Q4-2 · 不调合同</option><option value="Q4-3">Q4-3 · 可调合同</option></select><span>源数据：10 min · 144 slots</span></div>
@@ -84,7 +103,7 @@
         <section class="digital-twin" aria-label="微网数字孪生拓扑">
           <div class="dt-heading"><span class="panel-kicker">DIGITAL TWIN · STRUCTURAL VIEW</span><strong>能量交换拓扑</strong><span id="snapshotStatusTop">READ-ONLY RESULT SNAPSHOT</span></div>
           <div class="dt-scene">
-            <svg class="dt-lines" viewBox="0 0 1000 190" preserveAspectRatio="none" aria-hidden="true"><defs><pattern id="gridPattern" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M 28 0 L 0 0 0 28" fill="none" stroke="#2d4a54" stroke-width=".6" opacity=".5"/></pattern></defs><rect width="1000" height="190" fill="url(#gridPattern)"/><path id="flowGrid" class="flow-line flow-blue"/><path id="flowLoad" class="flow-line flow-load"/><path id="flowPv" class="flow-line flow-orange"/><path id="flowBattery" class="flow-line flow-teal"/><path id="flowBus" class="flow-line flow-muted"/></svg>
+            <svg class="dt-lines" viewBox="0 0 1000 190" preserveAspectRatio="none" aria-hidden="true"><defs><pattern id="gridPattern" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M 28 0 L 0 0 0 28" fill="none" stroke="#2d4a54" stroke-width=".6" opacity=".5"/></pattern></defs><rect width="1000" height="190" fill="url(#gridPattern)"/><path id="flowGrid" class="flow-line flow-blue"/><path id="flowLoad" class="flow-line flow-load"/><path id="flowPv" class="flow-line flow-orange"/><path id="flowBattery" class="flow-line flow-teal"/></svg>
             <div class="dt-node dt-grid"><span class="dt-symbol">↔</span><div><small>GRID</small><strong>普通购电</strong></div></div>
             <div class="dt-node dt-pv"><span class="dt-symbol">☼</span><div><small>PV ARRAY</small><strong>光伏输入</strong></div></div>
             <div class="dt-node dt-battery"><span class="dt-symbol">▥</span><div><small>STORAGE</small><strong>12,000 kWh</strong></div></div>
