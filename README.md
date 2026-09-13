@@ -3,13 +3,13 @@
 ## Live Demo
 
 - 前端（GitHub Pages）：<https://yigedashuaige-hi.github.io/GridScope/>
-- API 状态（Render，完成一次性创建后）：<https://gridscope-api-yigedashuaige.onrender.com/api/health>
+- API 状态（Render）：<https://gridscope-api-yigedashuaige.onrender.com/api/health>
 - Evidence Mode 完全读取站点内的 `data/web_data.json`，无需后端即可浏览 334 天、144 个十分钟时段和 Causal Replay。
 - Lab / Forecast Mode 需要在线 Solver；Render 免费实例首次访问可能显示 `SOLVER WAKING` 并等待冷启动。
 
-GitHub Pages 由 `.github/workflows/deploy-pages.yml` 在 `main` push 后自动发布。当前仓库已准备好 Render Blueprint，但 Render API 尚未授权；第一次上线只需在 Render Dashboard 执行：`New` → `Blueprint` → 连接 `yigedashuaige-hi/GridScope` → 选择 `main` → 确认 `render.yaml` → `Apply`。服务名保持 `gridscope-api-yigedashuaige` 时，上面的 API 地址无需修改；部署完成后先打开 `/api/health`，再从 Pages 使用 Lab / Forecast Mode。
+GitHub Pages 由 `.github/workflows/deploy-pages.yml` 在 `main` push 后自动发布，只上传首页运行所需的静态文件和 `data/web_data.json`。Render Blueprint 已配置并在线运行；服务固定 Python 3.12，NumPy/SciPy/Pandas 使用锁定的预编译 wheel，构建命令禁止这三个包从源码编译。服务名保持 `gridscope-api-yigedashuaige` 时，上面的 API 地址无需修改。
 
-若 Dashboard 不显示 Blueprint，也可选择 `New` → `Web Service`，仓库选 `yigedashuaige-hi/GridScope`，Runtime 选 Python，Build Command 填 `pip install -r backend/requirements.txt`，Start Command 填 `uvicorn backend.server:app --host 0.0.0.0 --port $PORT`，Health Check Path 填 `/api/health`，并将服务名设为 `gridscope-api-yigedashuaige`。
+若需要重新创建 Render 服务，可选择 `New` → `Web Service`，仓库选 `yigedashuaige-hi/GridScope`，Runtime 选 Python，使用仓库中的 `render.yaml`；手动配置时 Build Command 填 `python -m pip install --upgrade pip && python -m pip install --no-cache-dir --only-binary=numpy,scipy,pandas -r backend/requirements.txt`，Start Command 填 `uvicorn backend.server:app --host 0.0.0.0 --port $PORT`，Health Check Path 填 `/api/health`，并将服务名设为 `gridscope-api-yigedashuaige`。
 
 GridScope 是一个面向光储微网的科研控制台：用最终 Q1–Q4 结果做可追溯的历史回放，并在隔离的 Scenario Lab 中调用仓库内最终 Q1–Q4 模型进行自定义情景优化。
 

@@ -6,7 +6,7 @@ let frozen = {};
 function fmt(value, digits = 1) { return Number(value || 0).toLocaleString('zh-CN', { maximumFractionDigits: digits, minimumFractionDigits: digits }); }
 function dateData() { return state.data?.days?.[state.date]; }
 function selectedStrategy() { return dateData()?.strategies?.[state.strategy] || dateData()?.strategies?.['Q3-M3']; }
-function slotLabel(index) { return state.data?.slot_labels?.[index] || `${String(Math.floor((index + 1) / 6) % 24).padStart(2, '0')}:${String((index + 1) % 6 * 10).padStart(2, '0')}`; }
+function slotLabel(index) { const label = state.data?.slot_labels?.[index]; if (label) return label === '0:00+1' ? '24:00' : label; return index === 143 ? '24:00' : `${String(Math.floor((index + 1) / 6) % 24).padStart(2, '0')}:${String((index + 1) % 6 * 10).padStart(2, '0')}`; }
 function setSolverStatus(status, note) { state.solverStatus = status; const value = $('#solverStatusValue'); const detail = $('#solverStatusNote'); const retry = $('#solverRetry'); if (value) { value.textContent = status === 'online' ? 'SOLVER ONLINE' : status === 'waking' ? 'SOLVER WAKING' : status === 'offline' ? 'SOLVER OFFLINE' : 'SOLVER CHECKING'; value.dataset.status = status; } if (detail) detail.textContent = note || (status === 'online' ? 'Q1/Q2/Q3/Q4 online' : status === 'waking' ? '正在唤醒优化求解器…' : '在线求解器暂不可用'); if (retry) retry.hidden = status !== 'offline'; }
 function showLabError(error) { const message = error?.message || '求解器请求失败'; const hint = state.solverStatus === 'offline' ? ' 请确认 Render 服务已唤醒后重试。' : ''; $('#labError').textContent = `${message}${hint}`; $('#labError').hidden = false; }
 
