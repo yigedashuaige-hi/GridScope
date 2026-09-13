@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -16,15 +17,30 @@ except ImportError:  # uvicorn server:app --app-dir backend
     from model_service import solve_scenario, solve_forecast, solve_q3, solve_q4
 
 app = FastAPI(title="GridScope Scenario API", version="1.0.0")
+_default_origins = [
+    "http://127.0.0.1:4173",
+    "http://localhost:4173",
+    "https://yigedashuaige-hi.github.io",
+]
+_extra_origins = [origin.strip() for origin in os.getenv("GRIDSCOPE_ALLOWED_ORIGINS", "").split(",") if origin.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], allow_credentials=False, allow_methods=["*"], allow_headers=["*"],
+    allow_origins=list(dict.fromkeys(_default_origins + _extra_origins)),
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
 )
 
 
 @app.get("/api/health")
 def health() -> dict[str, Any]:
-    return {"ok": True, "service": "GridScope Scenario API", "solver": "q1.py / scipy HiGHS MILP"}
+    return {
+        "ok": True,
+        "status": "online",
+        "service": "GridScope Scenario API",
+        "solver": "q1.py / q2.py / q3.py / q4.py · scipy HiGHS",
+        "version": app.version,
+    }
 
 
 @app.post("/api/scenario/solve")

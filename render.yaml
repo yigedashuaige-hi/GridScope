@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: gridscope-api-yigedashuaige
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true

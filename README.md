@@ -1,5 +1,14 @@
 # GridScope / 微网智能调度站
 
+## Live Demo
+
+- 前端（GitHub Pages）：<https://yigedashuaige-hi.github.io/GridScope/>
+- API 状态（Render）：<https://gridscope-api-yigedashuaige.onrender.com/api/health>
+- Evidence Mode 完全读取站点内的 `data/web_data.json`，无需后端即可浏览 334 天、144 个十分钟时段和 Causal Replay。
+- Lab / Forecast Mode 需要在线 Solver；Render 免费实例首次访问可能显示 `SOLVER WAKING` 并等待冷启动。
+
+GitHub Pages 由 `.github/workflows/deploy-pages.yml` 在 `main` push 后自动发布。Render 可从仓库根目录导入 `render.yaml`；若使用 Dashboard，选择 Python Web Service，Build Command 为 `pip install -r backend/requirements.txt`，Start Command 为 `uvicorn backend.server:app --host 0.0.0.0 --port $PORT`，Health Check Path 为 `/api/health`。服务名保持 `gridscope-api-yigedashuaige` 时，上面的 API 地址无需修改。
+
 GridScope 是一个面向光储微网的科研控制台：用最终 Q1–Q4 结果做可追溯的历史回放，并在隔离的 Scenario Lab 中调用仓库内最终 Q1–Q4 模型进行自定义情景优化。
 
 ## 功能边界
@@ -36,7 +45,7 @@ Quick/Expert 的 `alpha` 会被校验并随实验记录返回，但确定性 MIL
 终端一：生成或刷新网页快照（只写入站点 `data/`，不会写入官方/结果目录）：
 
 ```bash
-python3 exporter/export_web_data.py
+backend/.venv/bin/python exporter/export_web_data.py
 ```
 
 终端二：启动场景求解 API：
